@@ -7,3 +7,7 @@
 #ifdef RGBLIGHT_ENABLE
 #define RGBLIGHT_SLEEP
 #endif // RGBLIGHT_ENABLE
+
+// Change Command mode keys to LShift + RShift + LCtrl
+// Makes it less likely to accidentally trigger this mode when using Space Cadet
+#define IS_COMMAND() (get_mods() == (MOD_MASK_SHIFT | MOD_BIT(KC_LCTL)))
