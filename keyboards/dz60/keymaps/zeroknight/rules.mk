@@ -7,3 +7,4 @@ MOUSEKEY_ENABLE  = no
 RGBLIGHT_ENABLE  = yes     # But we do have underglow
 TAP_DANCE_ENABLE = no
 KEY_OVERRIDE_ENABLE = yes  # Allow custom keybinds, i.e. Shift+Backspace = Del
+CAPS_WORD_ENABLE = yes
