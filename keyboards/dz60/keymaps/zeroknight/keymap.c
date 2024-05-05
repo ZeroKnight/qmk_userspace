@@ -24,11 +24,8 @@ enum KeyboardLayers {
     _NL,      // Numpad Layer
 };
 
-#define MY_CAPS LCTL_T(KC_CAPS)
 #define FN_1 LT(_EL, KC_GRV)
 #define FN_2 LT(_ML, KC_RGUI)
-#define WORDL LCTL(KC_LEFT)
-#define WORDR LCTL(KC_RGHT)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BL] = LAYOUT_60_tsangan(
