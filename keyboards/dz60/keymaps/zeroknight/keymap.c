@@ -16,6 +16,11 @@
     )
 */
 
+#define LED_ROWS 2
+#define LED_COLS 8
+#define LED_AT(r, c) (r * LED_COLS + c)
+#define LED_SPC LED_AT(1, 2), 4
+
 enum KeyboardLayers {
     _BL = 0,  // Base Layer
     _EL,      // Extension Layer
@@ -72,3 +77,61 @@ const key_override_t **key_overrides = (const key_override_t *[]){
     &delete_key_override,
     NULL
 };
+
+// Lighting Layers
+
+const rgblight_segment_t PROGMEM ll_capslock[] = RGBLIGHT_LAYER_SEGMENTS(
+    // Illuminate bottom left area when Caps Lock is on
+    {LED_AT(1, 0), 2, 180, 128, 255}
+);
+
+const rgblight_segment_t PROGMEM ll_capsword[] = RGBLIGHT_LAYER_SEGMENTS(
+    // Illuminate spacebar when Caps Word is active
+    {LED_SPC, HSV_PURPLE}
+);
+
+const rgblight_segment_t PROGMEM ll_layer_EL[] = RGBLIGHT_LAYER_SEGMENTS(
+    // Illuminate spacebar when Extended Layer is on
+    {LED_SPC, HSV_AZURE}
+);
+
+const rgblight_segment_t PROGMEM ll_layer_ML[] = RGBLIGHT_LAYER_SEGMENTS(
+    // Illuminate spacebar when Media Layer is on
+    {LED_SPC, HSV_ORANGE}
+);
+
+const rgblight_segment_t PROGMEM ll_layer_CL[] = RGBLIGHT_LAYER_SEGMENTS(
+    // Illuminate bottom right area red when Control Layer is active
+    {LED_AT(1, LED_COLS - 2), 2, HSV_RED}
+);
+
+const rgblight_segment_t PROGMEM ll_layer_NL[] = RGBLIGHT_LAYER_SEGMENTS(
+    // Illuminate area around "numpad" when Numpad Layer is on
+    {LED_AT(0, LED_COLS - 4), 3, HSV_CYAN},
+    {LED_AT(1, LED_COLS - 4), 3, HSV_CYAN}
+);
+
+const rgblight_segment_t* const PROGMEM light_layers[] = RGBLIGHT_LAYERS_LIST(
+    ll_capslock, ll_capsword, ll_layer_EL, ll_layer_ML, ll_layer_NL, ll_layer_CL
+);
+
+void keyboard_post_init_user(void) {
+    rgblight_layers = light_layers;
+}
+
+bool led_update_user(led_t led_state) {
+    rgblight_set_layer_state(0, led_state.caps_lock);
+    return true;
+}
+
+void caps_word_set_user(bool active) {
+    rgblight_set_layer_state(1, active);
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    rgblight_set_layer_state(2, layer_state_cmp(state, _EL) && !layer_state_cmp(state, _CL));
+    rgblight_set_layer_state(3, layer_state_cmp(state, _ML) && !layer_state_cmp(state, _CL));
+    rgblight_set_layer_state(4, layer_state_cmp(state, _NL));
+    rgblight_set_layer_state(5, layer_state_cmp(state, _CL));
+    return state;
+}
